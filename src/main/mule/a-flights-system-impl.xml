@@ -7,7 +7,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="getFlights" doc:id="64b54089-a8e8-49a6-8098-19e2acba9bd6" >
-		<http:listener doc:name="Get Flights" doc:id="f4d590af-7cb9-4b13-a8d6-f34ed3d3873b" path="/flights" config-ref="HTTP_Listener_config"/>
 		<db:select doc:name="flights" doc:id="a508c797-48af-4617-a693-dd16e8b7ec3f" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM american]]></db:sql>
 		</db:select>
@@ -21,7 +20,6 @@ payload]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="getFlightByID" doc:id="8e4b4311-595f-45ac-82f2-519aa11d0dc4" >
-	<http:listener doc:name="Get Flights" doc:id="2a9cc3ca-4fb5-4cd1-85ba-fbc627024c75" path="/flights/{ID}" config-ref="HTTP_Listener_config"/>
 		<db:select doc:name="flight{ID}" doc:id="b2348a12-af4e-4f8b-afeb-ac78d2198bfd" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT *
 FROM american
