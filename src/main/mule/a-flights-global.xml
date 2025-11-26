@@ -5,11 +5,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<configuration-properties doc:name="Configuration properties" doc:id="c28224d2-d87a-4996-977a-6962e5b897a3" file="config\local-properties.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="c28224d2-d87a-4996-977a-6962e5b897a3" file="config\\${env}-properties.yaml" />
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="d3882ed9-a060-44dc-b664-3913d50b5b47" >
-		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+		<db:my-sql-connection host="${db.mysql.host}" port="${db.mysql.port}" user="${db.mysql.user}" password="${db.mysql.password}" database="${db.mysql.database}" />
 	</db:config>
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="387a050f-3a13-491c-ac0f-abab4794648a" >
 		<http:listener-connection host="${http.listener.host}" port="${http.listener.port}" readTimeout="${http.listener.readTimeout}" connectionIdleTimeout="${http.listener.connectionTimeout}"/>
 	</http:listener-config>
+	<global-property doc:name="Global Property" doc:id="2d076f26-8901-4bc9-802a-ec87811ddcf3" name="env" value="local" />
 </mule>

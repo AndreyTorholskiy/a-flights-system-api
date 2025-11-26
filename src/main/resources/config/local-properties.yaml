@@ -6,8 +6,9 @@ http:
     connectionTimeout: "80000"
      
 db:
-  host: "mudb.mule-training.com"
-  port: "3306"
-  user: "mule"
-  password: "mule"
-  database: "training"
+  mysql:
+    host: "mudb.mule-training.com"
+    port: "3306"
+    user: "mule"
+    password: "mule"
+    database: "training"
