@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>5fc2f011-c87a-4c0c-814c-d837e0638f4f</groupId>
 			<artifactId>a-fligths-system-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.2</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>

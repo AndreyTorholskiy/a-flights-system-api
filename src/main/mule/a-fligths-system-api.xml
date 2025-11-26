@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="a-fligths-system-api-config" api="resource::5fc2f011-c87a-4c0c-814c-d837e0638f4f:a-fligths-system-api:1.0.0:raml:zip:a-fligths-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="a-fligths-system-api-config" api="resource::5fc2f011-c87a-4c0c-814c-d837e0638f4f:a-fligths-system-api:1.0.2:raml:zip:a-fligths-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="a-fligths-system-api-main">
         <http:listener config-ref="HTTP_Listener_config" path="/api/a-flights-sa/v1/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -121,9 +121,9 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\flights:a-fligths-system-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="c7bec8eb-d0de-4a36-8802-5b28e991aee7" name="getFlights"/>
+        <flow-ref doc:name="Flow Reference" doc:id="c7bec8eb-d0de-4a36-8802-5b28e991aee7" name="getFlights" />
     </flow>
     <flow name="get:\flights\(ID):a-fligths-system-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="8d492afa-d7bc-46f3-899a-214cf472bdd7" name="getFlightByID"/>
+        <flow-ref doc:name="Flow Reference" doc:id="8d492afa-d7bc-46f3-899a-214cf472bdd7" name="getFlightByID" />
     </flow>
 </mule>

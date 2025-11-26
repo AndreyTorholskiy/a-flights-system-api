@@ -9,26 +9,43 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="getFlights" doc:id="04838dce-471c-4d95-ac5b-66308a2faa8c">
 		<ee:transform doc:name="SQL" doc:id="4e45043a-d2f0-41b0-8a1d-4b9e95eb9ebf" >
 			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sql" ><![CDATA[%dw 2.0
 output application/json
 
-//var 
+var destination = attributes.queryParams.destination default ""
+var tableName = "american"
+
 ---
-{
-}]]></ee:set-payload>
-			</ee:message>
+if (isBlank(destination)) 
+    "SELECT * FROM " ++ tableName
+else 
+    "SELECT * FROM " ++ tableName ++ " WHERE toAirport = '" ++ destination ++ "'"]]></ee:set-variable>
+			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="a8b1cf54-04d6-46a8-944e-4fe31000576f" />
 		<db:select doc:name="flights" doc:id="a508c797-48af-4617-a693-dd16e8b7ec3f" config-ref="Database_Config">
-			<db:sql><![CDATA[SELECT *
-FROM american]]></db:sql>
+			<db:sql><![CDATA[#[vars.sql]]]></db:sql>
 		</db:select>
 		<ee:transform doc:name="Java to JSON" doc:id="4ea0b171-96ba-469a-8b29-79c936c4274d">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	ID: payload01.ID,
+	code: (payload01.code1 default "") ++ (payload01.code2 default ""),
+	price: payload01.price default 0,
+	departureDate: payload01.takeOffDate as Date {format: "yyyy-MM-dd"} 
+										   as String {format: "yyyy/MM/dd"},
+	origin: payload01.fromAirport default "",
+	destination: payload01.toAirport default "",
+	emptySeats: payload01.seatsAvailable default 0,
+	plane: {
+		"type": payload01.planeType default "",
+		totalSeats: payload01.totalSeats default 0
+	}
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
@@ -43,20 +60,24 @@ WHERE ID = :ID]]></db:sql>
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
+var object = payload[0]
 ---
-payload map ( payload01 , indexOfPayload01 ) -> {
-	ID: payload01.ID,
-	code: (payload01.code2 default "") ++ (payload01.code1 default ""),
-	price: payload01.price default 0,
-	departureDate: payload01.takeOffDate as String default "",
-	origin: payload01.fromAirport default "",
-	destination: payload01.toAirport default "",
-	emptySeats: payload01.seatsAvailable default 0,
+{
+	ID: payload[0].ID,
+	code: (payload[0].code1 default "") ++ (payload[0].code2 default ""),
+	price: payload[0].price default 0,
+	departureDate: payload[0].takeOffDate as Date {format: "yyyy-MM-dd"} 
+										   as String {format: "yyyy/MM/dd"},
+	origin: payload[0].fromAirport default "",
+	destination: payload[0].toAirport default "",
+	emptySeats: payload[0].seatsAvailable default 0,
 	plane: {
-		"type": payload01.planeType default "",
-		totalSeats: payload01.totalSeats default 0
+		"type": payload[0].planeType default "",
+		totalSeats: payload[0].totalSeats default 0
 	}
-}]]></ee:set-payload>
+}
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="fe5034f0-ea28-422b-99f5-4a501aead2dd" />

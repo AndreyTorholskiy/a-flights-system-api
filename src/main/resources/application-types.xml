@@ -23,7 +23,7 @@ type flight_json = {|
     <types:type name="flights_json" format="json">
       <types:shape format="weave" example="examples/flights-example-a.json"><![CDATA[%dw 2.0
 
-type flights_json = Array<{|  ID: Number {"typeId": "int"},   code1: String,   code2: String,   airlineName: String,   toAirport: String,   fromAirport: String,   takeOffDate: String,   price: Number {"typeId": "int"},   planeType: String,   seatsAvailable: Number {"typeId": "int"},   totalSeats: Number {"typeId": "int"}|}> {"example": "[{\\\"ID\\\":1,\\\"code1\\\":\\\"rree\\\",\\\"code2\\\":\\\"0001\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"LAX\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":541,\\\"planeType\\\":\\\"Boeing 787\\\",\\\"seatsAvailable\\\":0,\\\"totalSeats\\\":200}]"}
+type flights_json = Array<{|  ID: Number {"typeId": "int"},   code: String,   price: Number {"typeId": "int"},   departureDate: String,   origin: String,   destination: String,   emptySeats: Number {"typeId": "int"},   plane: {|    "type": String,     totalSeats: Number {"typeId": "int"}  |}|}> {"example": "[{\\\"ID\\\":1,\\\"code\\\":\\\"ER38sd\\\",\\\"price\\\":400,\\\"departureDate\\\":\\\"2017\\/07\\/26\\\",\\\"origin\\\":\\\"CLE\\\",\\\"destination\\\":\\\"SFO\\\",\\\"emptySeats\\\":0,\\\"plane\\\":{\\\"type\\\":\\\"Boeing 737\\\",\\\"totalSeats\\\":150}}]"}
 
 ]]></types:shape>
     </types:type>
@@ -38,15 +38,6 @@ type flights_json = Array<{|  ID: Number {"typeId": "int"},   code1: String,   c
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#57d92a78-816d-4859-953f-ea653f3455f8">
-    <types:processor-declaration>
-      <types:output-event>
-        <types:message>
-          <types:payload type="flight_json"/>
-        </types:message>
-      </types:output-event>
-    </types:processor-declaration>
-  </types:enrichment>
-  <types:enrichment select="#8e4b4311-595f-45ac-82f2-519aa11d0dc4">
     <types:processor-declaration>
       <types:output-event>
         <types:message>
