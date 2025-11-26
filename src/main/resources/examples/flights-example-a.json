@@ -1,0 +1,15 @@
+[
+  {
+    "ID": 1,
+    "code1": "rree",
+    "code2": "0001",
+    "airlineName": "American Airlines",
+    "toAirport": "LAX",
+    "fromAirport": "MUA",
+    "takeOffDate": "2016-01-20",
+    "price": 541,
+    "planeType": "Boeing 787",
+    "seatsAvailable": 0,
+    "totalSeats": 200
+  }
+]
