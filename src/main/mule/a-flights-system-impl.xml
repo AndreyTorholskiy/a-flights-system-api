@@ -7,13 +7,21 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="getFlights" doc:id="04838dce-471c-4d95-ac5b-66308a2faa8c">
-		<flow-ref doc:name="setDestination" doc:id="2fd2c506-c7e5-4690-ae00-8d08a7d28300" name="setDestination"/>
+		<ee:transform doc:name="SQL" doc:id="4e45043a-d2f0-41b0-8a1d-4b9e95eb9ebf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+//var 
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="a8b1cf54-04d6-46a8-944e-4fe31000576f" />
 		<db:select doc:name="flights" doc:id="a508c797-48af-4617-a693-dd16e8b7ec3f" config-ref="Database_Config">
 			<db:sql><![CDATA[SELECT *
-FROM american
-WHERE (:dest IS NULL OR toAirport = :dest)]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{dest: vars.destination}]]]></db:input-parameters>
+FROM american]]></db:sql>
 		</db:select>
 		<ee:transform doc:name="Java to JSON" doc:id="4ea0b171-96ba-469a-8b29-79c936c4274d">
 			<ee:message>
@@ -24,9 +32,6 @@ payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<sub-flow name="setDestination" doc:id="8b0f5295-80e0-4011-a965-ce048c2ddb46" >
-		<set-variable doc:name="destination" doc:id="212045ce-9968-4f07-bdb9-43167a4ab409" variableName="destination" value="#[message.attributes.queryParams.destination default '']"/>
-	</sub-flow>
 	<flow name="getFlightByID" doc:id="8e4b4311-595f-45ac-82f2-519aa11d0dc4" >
 		<db:select doc:name="flight{ID}" doc:id="b2348a12-af4e-4f8b-afeb-ac78d2198bfd" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT *
