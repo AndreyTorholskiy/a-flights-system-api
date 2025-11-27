@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="4ec843ea-e61e-44c6-9d05-d1ae8fe14748" >
 		<db:my-sql-connection host="${db.mysql.host}" port="${db.mysql.port}" user="${db.mysql.user}" password="${db.mysql.password}" database="${db.mysql.database}" />
 	</db:config>
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f8063900-d0eb-4e75-8b4d-e34fd9609606" >
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f8063900-d0eb-4e75-8b4d-e34fd9609606">
 		<http:listener-connection host="${http.listener.host}" port="${http.listener.port}" readTimeout="${http.listener.readTimeout}" connectionIdleTimeout="${http.listener.connectionTimeout}"/>
 	</http:listener-config>
 	<global-property doc:name="Global Property" doc:id="2f1c2b21-6798-4673-9e3d-116a98455900" name="env" value="local" />	
