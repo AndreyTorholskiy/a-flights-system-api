@@ -21,7 +21,7 @@ var destination = attributes.queryParams.destination default ""
 if (isBlank(destination)) 
     "SELECT * FROM american"
 else 
-    "SELECT * FROM american WHERE toAirport = '" ++ destination ++ "'"]]></ee:set-variable>
+    "SELECT * FROM american WHERE toAirport = '$(destination)'"]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<db:select doc:name="flights" doc:id="b73366b5-8722-4294-9064-e85fae4f1ad9" config-ref="Database_Config">
