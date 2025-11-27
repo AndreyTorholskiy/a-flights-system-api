@@ -1,0 +1,14 @@
+http:
+  listener:
+    host: "0.0.0.0"
+    port: "8089"
+    readTimeout: "30000"
+    connectionTimeout: "80000"
+     
+db:
+  mysql:
+    host: "mudb.mule-training.com"
+    port: "3306"
+    user: "mule"
+    password: "mule"
+    database: "training"
