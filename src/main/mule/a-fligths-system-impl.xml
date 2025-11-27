@@ -28,6 +28,7 @@ else
 		<db:select doc:name="flights" doc:id="b73366b5-8722-4294-9064-e85fae4f1ad9" config-ref="Database_Config">
 			<db:sql><![CDATA[#[vars.sql]]]></db:sql>
 		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="a253972f-c231-4315-8447-20f40a2c7974" />
 		<ee:transform doc:name="Java to JSON" doc:id="d9ca74f9-be9f-43c2-a99f-9aeb66c6d942">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
