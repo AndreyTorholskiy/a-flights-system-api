@@ -14,14 +14,13 @@ types:
           - SFO
           - LAX
           - CLE
-
     responses:
       200:
         body:
           application/json:
             type: AmericanFlight[]
             examples:
-              output: !include examples/AmericanFlightsExample.raml
+              output: !include examples/AmericanFlightsExample.json
   
   /{ID}:
     get:
@@ -31,4 +30,4 @@ types:
             application/json:
               type: AmericanFlight
               examples:
-                output: !include examples/AmericanFlightExample.raml
+                output: !include examples/AmericanFlightExample.json
