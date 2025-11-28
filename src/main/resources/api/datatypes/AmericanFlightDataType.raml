@@ -1,0 +1,55 @@
+#%RAML 1.0 DataType
+type: object
+properties: 
+  ID?:
+    type: integer
+    required: false
+    displayName: ID
+    description: The unique identefier of the flight
+    example: 1
+  code:
+    type: string
+    displayName: Flight code
+    description: Combined code1 and code2 for flight indentefication
+    example: "FEE1314"
+  price:
+    type: number
+    displayName: Price
+    description: Ticket cost for the flight
+    example: 199.99
+  departureDate:
+    type: string
+    displayName: Departure Date
+    description: Scheduled date of departure
+    example: "2025/03/15"
+  origin:
+    type: string
+    displayName: Origin Airport
+    description: Code of the origin airport
+    example: "CLE"
+  destination:
+    type: string
+    displayName: Destination Airport
+    description: Code of the destination airport
+    example: "LAX"
+  emptySeats:
+    type: integer
+    displayName: Available Seats
+    description: Number of seats available for booking
+    example: 42
+  plane?:
+    type: object
+    required: false
+    displayName: Aircraft Details
+    description: Information about the airplane
+    properties:
+      type:
+        type: string
+        displayName: Plane Type
+        description: Model of the airplane
+        example: "Boeing 737"
+      totalSeats:
+        type: integer
+        displayName: Total Seats
+        description: Total number of seats in the airplane
+        example: 180

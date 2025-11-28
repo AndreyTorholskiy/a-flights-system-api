@@ -1,0 +1,17 @@
+api:
+  version: "v1"
+  
+http:
+  listener:
+    host: "0.0.0.0"
+    port: "8089"
+    path: "/a-flights-sa/api/${api.version}"
+    connectionTimeout: "120000" # 2 minutes
+     
+db:
+  mysql:
+    host: "mudb.mule-training.com"
+    port: "3306"
+    user: "mule"
+    password: "mule"
+    database: "training"

@@ -1,5 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="getFlights" doc:id="65a72a9b-128c-4f89-a0e4-89bfce466806">
+		<ee:transform doc:name="SQL" doc:id="df6514da-33d8-457d-ae6d-7fe4d0138d8a" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sql" ><![CDATA[%dw 2.0
+output application/json
+
+var destination = attributes.queryParams.destination
+var whereClause = if (destination != null) "WHERE toAirport = '$(destination)'"
+				  else ""
+---
+"SELECT * FROM american $(whereClause)"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="flights" doc:id="b8174aaf-3db4-4e78-92ef-3a8a653dd76d" config-ref="Database_Config">
+			<db:sql><![CDATA[#[vars.sql]]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Java to JSON" doc:id="4c6c4da1-e3a0-4cd3-8260-2b3fc70b812f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map (flight) -> {
+	ID:flight.ID,
+	code: (flight.code1 default "") ++ (flight.code2 default ""),
+	price:flight.price default 0,
+	departureDate:flight.takeOffDate as Date {format: "yyyy-MM-dd"} 
+										   as String {format: "yyyy/MM/dd"},
+	origin:flight.fromAirport default "",
+	destination:flight.toAirport default "",
+	emptySeats:flight.seatsAvailable default 0,
+	plane: {
+		"type":flight.planeType default "",
+		totalSeats:flight.totalSeats default 0
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>	
+	</sub-flow>
+	<sub-flow name="getFlightsByID" doc:id="89ab2b19-467d-4135-a8e0-a0f61271154d">
+		<db:select doc:name="flight{ID}" doc:id="8a0f2c5d-7e02-4ff9-bcd4-643a2b2c4266" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM american
+WHERE ID = :ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'ID': attributes.uriParams.ID}]]]></db:input-parameters>
+</db:select>
+		<ee:transform doc:name="Java to JSON" doc:id="f402c216-07ef-4b37-aa4d-0c6998a18607" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	ID: payload[0].ID,
+	code: (payload[0].code1 default "") ++ (payload[0].code2 default ""),
+	price: payload[0].price default 0,
+	departureDate: payload[0].takeOffDate as Date {format: "yyyy-MM-dd"} 
+										   as String {format: "yyyy/MM/dd"},
+	origin: payload[0].fromAirport default "",
+	destination: payload[0].toAirport default "",
+	emptySeats: payload[0].seatsAvailable default 0,
+	plane: {
+		"type": payload[0].planeType default "",
+		totalSeats: payload[0].totalSeats default 0
+	}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>	
+</mule>
