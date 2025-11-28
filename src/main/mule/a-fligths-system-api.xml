@@ -124,6 +124,6 @@ output application/json
 		<flow-ref doc:name="getFlights" doc:id="b8d70af6-3709-4f18-85d8-d3558197785d" name="getFlights"/>
     </flow>
     <flow name="get:\flights\(ID):a-fligths-system-api-config">
-		<flow-ref doc:name="getFlightByID" doc:id="0f03d6a1-844a-4e94-b2b8-670101701827" name="getFlightByID"/>
+		<flow-ref doc:name="Flow Reference" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightsByID"/>
     </flow>
 </mule>
