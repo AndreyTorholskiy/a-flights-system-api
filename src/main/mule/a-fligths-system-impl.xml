@@ -30,18 +30,18 @@ var whereClause = if (destination != null) "WHERE toAirport = '$(destination)'"
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload map ( payload01 , indexOfPayload01 ) -> {
-	ID: payload01.ID,
-	code: (payload01.code1 default "") ++ (payload01.code2 default ""),
-	price: payload01.price default 0,
-	departureDate: payload01.takeOffDate as Date {format: "yyyy-MM-dd"} 
+payload map (flight) -> {
+	ID:flight.ID,
+	code: (flight.code1 default "") ++ (flight.code2 default ""),
+	price:flight.price default 0,
+	departureDate:flight.takeOffDate as Date {format: "yyyy-MM-dd"} 
 										   as String {format: "yyyy/MM/dd"},
-	origin: payload01.fromAirport default "",
-	destination: payload01.toAirport default "",
-	emptySeats: payload01.seatsAvailable default 0,
+	origin:flight.fromAirport default "",
+	destination:flight.toAirport default "",
+	emptySeats:flight.seatsAvailable default 0,
 	plane: {
-		"type": payload01.planeType default "",
-		totalSeats: payload01.totalSeats default 0
+		"type":flight.planeType default "",
+		totalSeats:flight.totalSeats default 0
 	}
 }]]></ee:set-payload>
 			</ee:message>
@@ -58,8 +58,6 @@ WHERE ID = :ID]]></db:sql>
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
-
-var object = payload[0]
 ---
 {
 	ID: payload[0].ID,
