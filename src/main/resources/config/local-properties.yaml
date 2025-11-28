@@ -6,8 +6,7 @@ http:
     host: "0.0.0.0"
     port: "8089"
     path: "/a-flights-sa/api/${api.version}"
-    readTimeout: "30000"
-    connectionTimeout: "80000"
+    connectionTimeout: "120000" # 2 minutes
      
 db:
   mysql:
