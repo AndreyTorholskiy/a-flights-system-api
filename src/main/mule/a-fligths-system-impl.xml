@@ -34,8 +34,7 @@ payload map (flight) -> {
 	ID:flight.ID,
 	code: (flight.code1 default "") ++ (flight.code2 default ""),
 	price:flight.price default 0,
-	departureDate:flight.takeOffDate as Date {format: "yyyy-MM-dd"} 
-										   as String {format: "yyyy/MM/dd"},
+	departureDate:flight.takeOffDate as String {format: "yyyy/MM/dd"},
 	origin:flight.fromAirport default "",
 	destination:flight.toAirport default "",
 	emptySeats:flight.seatsAvailable default 0,
@@ -63,8 +62,7 @@ output application/json
 	ID: payload[0].ID,
 	code: (payload[0].code1 default "") ++ (payload[0].code2 default ""),
 	price: payload[0].price default 0,
-	departureDate: payload[0].takeOffDate as Date {format: "yyyy-MM-dd"} 
-										   as String {format: "yyyy/MM/dd"},
+	departureDate: payload[0].takeOffDate as String {format: "yyyy/MM/dd"},
 	origin: payload[0].fromAirport default "",
 	destination: payload[0].toAirport default "",
 	emptySeats: payload[0].seatsAvailable default 0,
