@@ -3,10 +3,7 @@ api:
   
 http:
   listener:
-    host: "0.0.0.0"
-    port: "8089"
     path: "/a-flights-sa/api/${api.version}"
-    connectionTimeout: "120000" # 2 minutesor
      
 db:
   mysql:
