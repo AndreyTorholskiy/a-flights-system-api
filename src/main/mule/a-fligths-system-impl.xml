@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<sub-flow name="getFlights" doc:id="65a72a9b-128c-4f89-a0e4-89bfce466806">
 		<ee:transform doc:name="SQL" doc:id="df6514da-33d8-457d-ae6d-7fe4d0138d8a" >
 			<ee:message >
@@ -46,16 +47,18 @@ payload map (flight) -> {
 			</ee:message>
 		</ee:transform>	
 	</sub-flow>
-	<sub-flow name="getFlightsByID" doc:id="89ab2b19-467d-4135-a8e0-a0f61271154d">
+	<flow name="getFlightsByID" doc:id="5c302e9a-d594-4453-acb2-6a6957191ded" >
+		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="ea714d6e-d6fb-4624-ae84-606cb1df5460" variableName="flightID"/>
 		<db:select doc:name="flight{ID}" doc:id="8a0f2c5d-7e02-4ff9-bcd4-643a2b2c4266" config-ref="Database_Config">
-			<db:sql ><![CDATA[SELECT *
-FROM american
-WHERE ID = :ID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'ID': attributes.uriParams.ID}]]]></db:input-parameters>
+			<db:sql><![CDATA[SELECT * FROM american WHERE ID =:ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
 </db:select>
-		<ee:transform doc:name="Java to JSON" doc:id="f402c216-07ef-4b37-aa4d-0c6998a18607" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<validation:is-not-empty-collection doc:name="Is Flight found" doc:id="e64354de-8137-4fe7-9535-5de01259a2bf" message='#["The flight with ID = $(vars.flightID) was not found"]'>
+			<error-mapping sourceType="VALIDATION:EMPTY_COLLECTION" targetType="APP:EMPTY_FLIGHT" />
+		</validation:is-not-empty-collection>
+		<ee:transform doc:name="Java to JSON" doc:id="f402c216-07ef-4b37-aa4d-0c6998a18607">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -73,6 +76,23 @@ output application/json
 }
 ]]></ee:set-payload>
 			</ee:message>
+			<ee:variables />
 		</ee:transform>
-	</sub-flow>	
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6a27f558-7a21-4862-b747-da451caaf09f" type="APP:EMPTY_FLIGHT">
+				<ee:transform doc:name="error.description" doc:id="fc085afd-309b-4cf4-a0bd-7004dcf9c993">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": error.description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="abf84b46-a6d6-4531-89ba-8d9826b46964" variableName="httpStatus" />
+				<logger level="INFO" doc:name="Logger" doc:id="156785b6-f85e-4faf-bc7a-124ab625cd63" message="#[payload]" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>	
 </mule>
