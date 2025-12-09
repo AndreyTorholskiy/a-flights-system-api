@@ -47,16 +47,16 @@ payload map (flight) -> {
 			</ee:message>
 		</ee:transform>	
 	</sub-flow>
-	<flow name="getFlightsByID" doc:id="5c302e9a-d594-4453-acb2-6a6957191ded" >
-		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="ea714d6e-d6fb-4624-ae84-606cb1df5460" variableName="flightID"/>
-		<db:select doc:name="flight{ID}" doc:id="8a0f2c5d-7e02-4ff9-bcd4-643a2b2c4266" config-ref="Database_Config">
+	<sub-flow name="getFlightByID" doc:id="c99720d1-56e7-415b-8c0e-257f51914f05">
+		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="a6488140-9f26-4d11-8ba3-28c3ea287ae8" variableName="flightID"/>
+		<db:select doc:name="flight{ID}" doc:id="e56c493f-9c91-45f3-8ff5-0b5a121dee64" config-ref="Database_Config">
 			<db:sql><![CDATA[SELECT * FROM american WHERE ID =:ID]]></db:sql>
 			<db:input-parameters ><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
 </db:select>
-		<validation:is-not-empty-collection doc:name="Is Flight found" doc:id="e64354de-8137-4fe7-9535-5de01259a2bf" message='#["The flight with ID = $(vars.flightID) was not found"]'>
+		<validation:is-not-empty-collection doc:name="Is Flight found" doc:id="4a2fef26-4cfe-4ebc-abb5-9baebee03738" message='#["The flight with ID = $(vars.flightID) was not found"]'>
 			<error-mapping sourceType="VALIDATION:EMPTY_COLLECTION" targetType="APP:EMPTY_FLIGHT" />
 		</validation:is-not-empty-collection>
-		<ee:transform doc:name="Java to JSON" doc:id="f402c216-07ef-4b37-aa4d-0c6998a18607">
+		<ee:transform doc:name="Java to JSON" doc:id="47f41063-afad-41ce-af5f-013df2af62cf">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -77,22 +77,7 @@ output application/json
 ]]></ee:set-payload>
 			</ee:message>
 			<ee:variables />
-		</ee:transform>
-		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6a27f558-7a21-4862-b747-da451caaf09f" type="APP:EMPTY_FLIGHT">
-				<ee:transform doc:name="error.description" doc:id="fc085afd-309b-4cf4-a0bd-7004dcf9c993">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message": error.description
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-				<set-variable value="404" doc:name="httpStatus" doc:id="abf84b46-a6d6-4531-89ba-8d9826b46964" variableName="httpStatus" />
-				<logger level="INFO" doc:name="Logger" doc:id="156785b6-f85e-4faf-bc7a-124ab625cd63" message="#[payload]" />
-			</on-error-propagate>
-		</error-handler>
-	</flow>	
+		</ee:transform>	
+	</sub-flow>
+		
 </mule>
