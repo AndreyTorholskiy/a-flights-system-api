@@ -45,7 +45,8 @@ payload map (flight) -> {
 	}
 }]]></ee:set-payload>
 			</ee:message>
-		</ee:transform>	
+		</ee:transform>
+		<logger level="INFO" doc:name="Number of Flights" doc:id="ecdde9db-9ad9-4c95-9dd5-1dc4f7a797df" message='#["Flights found: " ++ sizeOf(payload)]'/>	
 	</sub-flow>
 	<flow name="getFlightsByID" doc:id="5c302e9a-d594-4453-acb2-6a6957191ded" >
 		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="ea714d6e-d6fb-4624-ae84-606cb1df5460" variableName="flightID"/>
