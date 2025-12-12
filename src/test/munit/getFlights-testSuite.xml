@@ -8,5 +8,13 @@
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="getFlights-testSuite.xml" />
+	<munit:before-suite name="getFlights-testSuiteBefore_Suite" doc:id="3fe137db-3add-4729-ae58-08baad4b39e9" />
+	<munit:before-test name="getFlights-testSuiteBefore_Test" doc:id="8f37d560-d804-4a14-8d37-aed72dbd08ae" />
+	<munit:test name="allFlights-test" doc:id="82eaa811-5e68-49ce-bbac-9bd457b73bfc" description="This testing retrieving all flights without destination query param"/>
+	<munit:test name="flightsWithDestination-test" doc:id="4697fd7c-6374-45cf-81fa-f73fb3c2b984" description="This testing retrieving flights with destination query param"/>
+	<munit:test name="noFlights-test" doc:id="316617ac-af17-427c-8326-eb1936982759" description="This testing empty retrieving info about flights"/>
+	<munit:after-test name="getFlights-testSuiteAfter_Test" doc:id="b83f57ba-57e6-45e2-90bd-f8fce2b6c435" />
+	<munit:after-suite name="getFlights-testSuiteAfter_Suite" doc:id="690d4d32-0324-431b-a862-2ad7d24ec337" />
+
 
 </mule>
