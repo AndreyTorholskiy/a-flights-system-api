@@ -8,6 +8,52 @@
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="getFlightsFlow-testSuite.xml" />
-
+	<munit:test name="transformMessageForFlightFromDB-test" doc:id="f8882085-d1c9-488f-865e-dcc518e347cb" description="Should return flight details when flight with given ID exists">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="DB payload" doc:id="65f43827-0d9d-4bf5-b3d4-545dbaebdecb" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8a0f2c5d-7e02-4ff9-bcd4-643a2b2c4266" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[{&#10;	ID: 1,&#10;	code1: "AB",&#10;	code2: "123",&#10;	price: 120,&#10;	takeOffDate: "2025-01-01",&#10;	fromAirport: "LAX",&#10;	toAirport: "CFO",&#10;	seatsAvailable: 10,&#10;	planeType: "Boeing 737",&#10;	totalSeats: 120&#10;}]]' mediaType="application/java" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:name="Set Flight ID" doc:id="713cef68-a600-459f-bc42-46de960fe914">
+				<munit:attributes value="#[{uriParams:{ID: '1'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="getFlightsByID" doc:id="d2cc6c89-fb3e-4bea-9ae2-d5dda885807e" name="getFlightsByID"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="ID" doc:id="25132792-cf70-4b06-a762-2d28fdffd95f" actual="#[payload.ID]" expected="#[1]" message="Given ID doesn't match flight ID"/>
+			<munit-tools:assert-equals doc:name="code" doc:id="49660b35-d91c-412c-9bed-fa232c06818f" actual="#[payload.code]" expected="#['AB123']" message="Field code doesn't have right format"/>
+			<munit-tools:assert-equals doc:name="departureDate" doc:id="9f34dd52-d0bf-4ad8-9933-7c183b9063ae" actual="#[payload.departureDate]" expected="#['2025/01/01']" message="Field date doesn't have right format"/>
+			<munit-tools:assert-equals doc:name="plane.totalSeats" doc:id="b12fa1b1-3623-40e0-b3b3-4ce5928ec1ce" actual="#[payload.plane.totalSeats]" expected="#[120]" message="Field plane doesn't have right format"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="noFlightsWithID" doc:id="2a69d528-abc7-43e4-adb4-ada667332289" description="Testing scenario without flight with given ID" expectedErrorType="APP:EMPTY_FLIGHT">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="DB empty payload" doc:id="40be2fb1-712d-4d54-be22-4e0df8d97b56" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8a0f2c5d-7e02-4ff9-bcd4-643a2b2c4266" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[[]]" mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Flight ID" doc:id="6838ac25-8a91-47a2-aa90-7552c37bc456" >
+				<munit:attributes value="#[{uriParams:{ID: '131'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="getFlightsByID" doc:id="4cd22c9a-70d3-4d03-bb38-2f8119b4f871" name="getFlightsByID"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Error Description" doc:id="f04d9c55-568a-467a-8e0c-28c48cbe6fdd" actual="#[payload.message]" expected='#["The flight with ID = 131 was not found"]' message="Incorrect error message description"/>
+			<munit-tools:assert-equals doc:name="Status Code" doc:id="69291115-8806-4123-b7bf-b6d8fa44fb4d" actual="#[vars.httpStatus]" expected="#[404]" message="#['HTTP status code incorrect']"/>
+		</munit:validation>
+	</munit:test>
 
 </mule>

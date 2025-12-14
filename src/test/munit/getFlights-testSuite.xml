@@ -13,9 +13,9 @@
 				<munit-tools:with-attributes>
 					<munit-tools:with-attribute whereValue="b8174aaf-3db4-4e78-92ef-3a8a653dd76d" attributeName="doc:id" />
 				</munit-tools:with-attributes>
-				<munit-tools:then-return>
-					<munit-tools:payload value='#[[{&#10;	ID: 1,&#10;	code1: "AB",&#10;	code2: "123",&#10;	price: 120,&#10;	takeOffDate: "2025-01-01",&#10;	fromAirport: "LAX",&#10;	toAirport: "CFO",&#10;	seatsAvailable: 10,&#10;	planeType: "Boeing 737",&#10;	totalSeats: 120&#10;}]]' />
-				</munit-tools:then-return>
+			<munit-tools:then-return >
+				<munit-tools:payload value='#[[{&#10;	ID: 1,&#10;	code1: "AB",&#10;	code2: "123",&#10;	price: 120,&#10;	takeOffDate: "2025-01-01",&#10;	fromAirport: "LAX",&#10;	toAirport: "CFO",&#10;	seatsAvailable: 10,&#10;	planeType: "Boeing 737",&#10;	totalSeats: 120&#10;}]]' mediaType="application/java" />
+			</munit-tools:then-return>
 			</munit-tools:mock-when>
 	</munit:before-test>
 	<munit:test name="sqlVariableFormating-test" doc:id="4697fd7c-6374-45cf-81fa-f73fb3c2b984" description="This testing retrieving flights with destination query param">
@@ -31,7 +31,7 @@
 			<munit-tools:assert-equals doc:name="SQL variable" doc:id="0d4cd2a5-8e4c-4505-b494-ddfa903a31ed" actual="#[vars.sql]" expected="#['SELECT * FROM american WHERE toAirport = \'CFO\'']" message="SQL with destination is incorrect"/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="transformMessageFromDB-test" doc:id="7afb8876-6727-4836-a028-87e379fd0094" description="Checking right mapping data retrieved from DB">
+	<munit:test name="transformMessageForFlightsFromDB-test" doc:id="7afb8876-6727-4836-a028-87e379fd0094" description="Checking right mapping data retrieved from DB">
 		<munit:execution>
 			<flow-ref doc:name="getFlights" doc:id="53927bf7-667b-4024-9ff9-3142f9b9ed94" name="getFlights"/>
 		</munit:execution>
