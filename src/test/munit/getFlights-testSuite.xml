@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="getFlights-testSuite.xml" />
+	<munit:before-test name="dbPayload-Before_Test" doc:id="e821d194-2345-4b82-ba9e-d8bf59a785e5" >
+		<munit-tools:mock-when doc:name="DB payload" doc:id="6db1a284-7ada-4c83-ba88-87076e72fa13" processor="db:select">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="b8174aaf-3db4-4e78-92ef-3a8a653dd76d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			<munit-tools:then-return >
+				<munit-tools:payload value='#[[{&#10;	ID: 1,&#10;	code1: "AB",&#10;	code2: "123",&#10;	price: 120,&#10;	takeOffDate: "2025-01-01",&#10;	fromAirport: "LAX",&#10;	toAirport: "CFO",&#10;	seatsAvailable: 10,&#10;	planeType: "Boeing 737",&#10;	totalSeats: 120&#10;}]]' mediaType="application/java" />
+			</munit-tools:then-return>
+			</munit-tools:mock-when>
+	</munit:before-test>
+	<munit:test name="sqlVariableFormating-test" doc:id="4697fd7c-6374-45cf-81fa-f73fb3c2b984" description="This testing retrieving flights with destination query param">
+		<munit:behavior >
+			<munit:set-event doc:name="destination" doc:id="808af710-c271-4d41-9c47-eef117b313ce" >
+				<munit:attributes value='#[{queryParams: {destination: "CFO"}}]' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="getFlights" doc:id="75067d62-754e-459e-b540-c0bdbc3a9110" name="getFlights"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="SQL variable" doc:id="0d4cd2a5-8e4c-4505-b494-ddfa903a31ed" actual="#[vars.sql]" expected="#['SELECT * FROM american WHERE toAirport = \'CFO\'']" message="SQL with destination is incorrect"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="transformMessageForFlightsFromDB-test" doc:id="7afb8876-6727-4836-a028-87e379fd0094" description="Checking right mapping data retrieved from DB">
+		<munit:execution>
+			<flow-ref doc:name="getFlights" doc:id="53927bf7-667b-4024-9ff9-3142f9b9ed94" name="getFlights"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="code" doc:id="4f19c5cf-0eb3-4dd9-901e-2672cc5c8b98" actual="#[payload[0].code]" expected="#['AB123']" message="Field code doesn't have right format"/>
+			<munit-tools:assert-equals doc:name="departureDate" doc:id="40db7745-965b-44e7-a3b0-7c4de98b89ec" actual="#[payload[0].departureDate]" expected="#['2025/01/01']" message="Field date doesn't have right format"/>
+			<munit-tools:assert-equals doc:name="plane.totalSeats" doc:id="bde175bd-9755-420b-9725-83fe2b7fa07d" actual="#[payload[0].plane.totalSeats]" expected="#[120]" message="Field plane doesn't have right format"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
