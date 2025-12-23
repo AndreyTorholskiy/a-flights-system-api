@@ -11,8 +11,6 @@
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="a-fligths-system-api-config" />
-        <error-handler ref="a-globalError_Handler">
-        </error-handler>
     </flow>
     <flow name="a-fligths-system-api-console">
         <http:listener config-ref="HTTP_Domain_Listener_config" path="${http.listener.path}/console/*">
@@ -25,16 +23,11 @@
             </http:error-response>
         </http:listener>
         <apikit:console config-ref="a-fligths-system-api-config" />
-        <error-handler ref="a-globalError_Handler">
-
-        </error-handler>
     </flow>
     <flow name="get:\flights:a-fligths-system-api-config">
 		<flow-ref doc:name="getFlights" doc:id="b8d70af6-3709-4f18-85d8-d3558197785d" name="getFlights"/>
-		<error-handler ref="a-globalError_Handler" />
     </flow>
     <flow name="get:\flights\(ID):a-fligths-system-api-config">
 		<flow-ref doc:name="getFlightsByID" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightByID"/>
-		<error-handler ref="a-globalError_Handler" />
     </flow>
 </mule>

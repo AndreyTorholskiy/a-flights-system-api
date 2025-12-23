@@ -16,4 +16,5 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<global-property doc:name="Global Property" doc:id="2f1c2b21-6798-4673-9e3d-116a98455900" name="env" value="local" />	
     <apikit:config name="a-fligths-system-api-config" api="a-fligths-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<import doc:name="Import" doc:id="e5e81641-b36c-4de6-b790-afe7a878e263" file="a-common.xml" />
+	<configuration doc:name="Configuration" doc:id="2214df7a-33e9-4aa2-9741-9a6e564adae8" defaultErrorHandler-ref="a-globalError_Handler" />
 </mule>
