@@ -48,11 +48,11 @@ payload map (flight) -> {
 			</ee:message>
 		</ee:transform>	
 	</sub-flow>
-	<sub-flow name="getFlightByID" doc:id="c99720d1-56e7-415b-8c0e-257f51914f05">
-		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="a6488140-9f26-4d11-8ba3-28c3ea287ae8" variableName="flightID"/>
+	<sub-flow name="getFlightByID" doc:id="0b5a3950-92f9-4edf-97b7-a3184f27f33a" >
+		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="a6488140-9f26-4d11-8ba3-28c3ea287ae8" variableName="flightID" />
 		<db:select doc:name="flight{ID}" doc:id="e56c493f-9c91-45f3-8ff5-0b5a121dee64" config-ref="Database_Config">
 			<db:sql><![CDATA[SELECT * FROM american WHERE ID =:ID]]></db:sql>
-			<db:input-parameters ><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
 </db:select>
 		<validation:is-not-empty-collection doc:name="Is Flight found" doc:id="4a2fef26-4cfe-4ebc-abb5-9baebee03738" message='#["The flight with ID = $(vars.flightID) was not found"]'>
 		</validation:is-not-empty-collection>
@@ -77,7 +77,7 @@ output application/json
 ]]></ee:set-payload>
 			</ee:message>
 			<ee:variables />
-		</ee:transform>	
+		</ee:transform>
 	</sub-flow>
 		
 </mule>
