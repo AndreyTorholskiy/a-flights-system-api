@@ -9,6 +9,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<sub-flow name="getFlights" doc:id="65a72a9b-128c-4f89-a0e4-89bfce466806">
+		<set-variable value="#[attributes.queryParams.destination]" doc:name="queryParam" doc:id="c2260eb6-15fe-49bd-95a2-2235ed51658a" variableName="queryParam" />
 		<ee:transform doc:name="SQL" doc:id="df6514da-33d8-457d-ae6d-7fe4d0138d8a" >
 			<ee:message >
 			</ee:message>
@@ -16,7 +17,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 				<ee:set-variable variableName="sql" ><![CDATA[%dw 2.0
 output application/json
 
-var destination = attributes.queryParams.destination
+var destination = vars.queryParam
 var whereClause = if (destination != null) "WHERE toAirport = '$(destination)'"
 				  else ""
 ---
@@ -54,7 +55,6 @@ payload map (flight) -> {
 			<db:input-parameters ><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
 </db:select>
 		<validation:is-not-empty-collection doc:name="Is Flight found" doc:id="4a2fef26-4cfe-4ebc-abb5-9baebee03738" message='#["The flight with ID = $(vars.flightID) was not found"]'>
-			<error-mapping sourceType="VALIDATION:EMPTY_COLLECTION" targetType="APP:EMPTY_FLIGHT" />
 		</validation:is-not-empty-collection>
 		<ee:transform doc:name="Java to JSON" doc:id="47f41063-afad-41ce-af5f-013df2af62cf">
 			<ee:message>
