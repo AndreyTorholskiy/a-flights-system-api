@@ -108,55 +108,5 @@ output application/json
 			</ee:message>
 			<ee:variables />
 		</ee:transform>
-	</sub-flow>
-	<sub-flow name="initialRequestLogging" doc:id="18a41461-1cb4-46be-b26e-f67dd5fb4759" >
-		<ee:transform doc:name="initialRequest" doc:id="49da1b76-aeef-4478-8d87-c92de80b9b3a">
-			<ee:message>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="initialRequest" ><![CDATA[%dw 2.0
-output application/json
----
-{
-    "correlationId": correlationId,
-    "processingApi": app.name,    
-    "requestedURI": attributes.requestUri,
-    "method": attributes.method,
-	"processingStage": "IN_PROGRESS" 
-}]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="auditLogging" doc:id="adbc6912-32c8-437f-90a7-7fb2f1e6f8c5" name="auditLogging"/>
-	</sub-flow>
-	<sub-flow name="auditLogging" doc:id="922450c3-c5b4-4e93-85e7-76ecc97bf077" >
-		<ee:transform doc:name="auditLogging" doc:id="4024a966-dcfc-4784-ac2c-3c3f444c8db9">
-			<ee:message />
-			<ee:variables>
-				<ee:set-variable variableName="auditLogging" ><![CDATA[%dw 2.0
-output application/json
-var baseRequest = vars.initialRequest
-var extraInfo = vars.logMessage default {}
----
-baseRequest ++ extraInfo]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="auditMessageMapping" doc:id="e8fbf5ad-b30d-4921-b88d-efe8929a64ba" message="#[vars.auditLogging]"/>
-	</sub-flow>
-	<sub-flow name="finalLoggerMessage" doc:id="375f29a4-311b-414c-b498-04bc783c54d7" >
-		<ee:transform doc:name="finalLogMessage" doc:id="907424b5-db04-4aed-9528-797ed1f9fd2d" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="initialRequest" ><![CDATA[%dw 2.0
-import * from dw::util::Values
-output application/json
-
-var isError = (vars.httpStatus default 200) >= 400
-var processStatus = if (isError) "ERROR" else "COMPLETED"
----
-vars.initialRequest update field("processingStage") with processStatus]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="auditLogging" doc:id="d69f890b-22bf-47e1-ae98-794607600c8a" name="auditLogging" />
-	</sub-flow>		
+	</sub-flow>	
 </mule>
