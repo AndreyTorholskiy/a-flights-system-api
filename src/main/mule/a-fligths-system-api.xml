@@ -24,9 +24,7 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <flow-ref doc:name="initialRequestLogging" doc:id="8851ca4f-8013-44a9-878c-1a58faa62f26" name="initialRequestLogging" />
 		<apikit:console config-ref="a-fligths-system-api-config" />
-		<flow-ref doc:name="finalLoggerMessage" doc:id="66c34998-401d-4656-bd4f-bdf4a5e1519d" name="finalLoggerMessage"/>
     </flow>
     <flow name="get:\flights:a-fligths-system-api-config">
 		<ee:transform doc:name="logMessage" doc:id="cdaeab77-b2d6-4f04-99c7-a925d8c0d7e1" >
