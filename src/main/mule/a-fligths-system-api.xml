@@ -27,33 +27,9 @@
 		<apikit:console config-ref="a-fligths-system-api-config" />
     </flow>
     <flow name="get:\flights:a-fligths-system-api-config">
-		<ee:transform doc:name="logMessage" doc:id="cdaeab77-b2d6-4f04-99c7-a925d8c0d7e1" >
-			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: "Get American Flights request" 
-}]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="auditLogging" doc:id="4e4a19ca-7a4c-4227-bfb9-c93f1d944f67" name="auditLogging" />
 		<flow-ref doc:name="getFlights" doc:id="b8d70af6-3709-4f18-85d8-d3558197785d" name="getFlights" />
     </flow>
     <flow name="get:\flights\(ID):a-fligths-system-api-config">
-		<ee:transform doc:name="logMessage" doc:id="78e04fe6-b343-4f34-9459-393bd3213cc6" >
-			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: "Get American Flight By ID request" 
-}]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="auditLogging" doc:id="f7fdc23f-1013-4134-a7f2-dfc3ee932239" name="auditLogging" />
 		<flow-ref doc:name="getFlightsByID" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightByID" />
     </flow>
 </mule>
