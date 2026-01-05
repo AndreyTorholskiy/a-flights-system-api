@@ -9,6 +9,18 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<sub-flow name="getFlights" doc:id="65a72a9b-128c-4f89-a0e4-89bfce466806">
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="3e6a996e-9179-4276-ac5d-41c0f14cf122">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Get American Flights request"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="c58ee66c-f9e5-48f6-892b-c71f3a31845a" name="auditLogging"/>
 		<set-variable value="#[attributes.queryParams.destination]" doc:name="queryParam" doc:id="c2260eb6-15fe-49bd-95a2-2235ed51658a" variableName="queryParam" />
 		<ee:transform doc:name="SQL" doc:id="df6514da-33d8-457d-ae6d-7fe4d0138d8a" >
 			<ee:message >
@@ -27,18 +39,15 @@ var whereClause = if (destination != null) "WHERE toAirport = '$(destination)'"
 		<db:select doc:name="flights" doc:id="b8174aaf-3db4-4e78-92ef-3a8a653dd76d" config-ref="Database_Config">
 			<db:sql><![CDATA[#[vars.sql]]]></db:sql>
 		</db:select>
-		<ee:transform doc:name="logMessage" doc:id="7c958d12-d5ee-499d-805e-3bdd10130ee5" >
-			<ee:message >
+		<ee:transform doc:name="Logger Message: DB Response" doc:id="7c958d12-d5ee-499d-805e-3bdd10130ee5">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
 output application/json
-var destinationAirport = vars.queryParam default "All"
 ---
 {
-	flowName: flow.name,
-	message: "Get American Flights DB response",
-	destination: destinationAirport,
+	message: "Get American Flights: DB response",
 	fetchedRecords: sizeOf(payload)
 }]]></ee:set-variable>
 			</ee:variables>
@@ -65,12 +74,24 @@ payload map (flight) -> {
 		</ee:transform>	
 	</sub-flow>
 	<sub-flow name="getFlightByID" doc:id="0b5a3950-92f9-4edf-97b7-a3184f27f33a">
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="7800d264-d37b-47a9-a201-c06bb5bfbb68">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Get American Flight By ID request"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="0e5f6af8-67b5-4ca7-94a0-e5b6121578da" name="auditLogging" />
 		<set-variable value="#[attributes.uriParams.ID]" doc:name="flightID" doc:id="a6488140-9f26-4d11-8ba3-28c3ea287ae8" variableName="flightID" />
 		<db:select doc:name="flight{ID}" doc:id="e56c493f-9c91-45f3-8ff5-0b5a121dee64" config-ref="Database_Config">
 			<db:sql><![CDATA[SELECT * FROM american WHERE ID =:ID]]></db:sql>
 			<db:input-parameters><![CDATA[#["ID": vars.flightID]]]></db:input-parameters>
 </db:select>
-		<ee:transform doc:name="logMessage" doc:id="a4699fe6-49e5-4df7-a5c8-db2670258051">
+		<ee:transform doc:name="Logger Message: DB Response" doc:id="a4699fe6-49e5-4df7-a5c8-db2670258051">
 			<ee:message />
 			<ee:variables>
 				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
@@ -78,9 +99,8 @@ output application/json
 var flightId = vars.flightID default 0
 ---
 {
-	flowName: flow.name,
-	message: "Get American Flight By ID DB response",
-	id: flightId
+	message: "Get American Flight By ID: DB response",
+	flightId: flightId
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
