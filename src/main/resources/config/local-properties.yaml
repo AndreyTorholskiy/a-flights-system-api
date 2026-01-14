@@ -12,3 +12,9 @@ db:
     user: "mule"
     password: "mule"
     database: "training"
+
+ampq:
+  host: "localhost"
+  port: "5672"
+  user: "AndriiDev"
+  password: "qwerty12345"
