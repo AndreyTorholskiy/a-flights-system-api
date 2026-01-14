@@ -47,6 +47,7 @@ var whereClause = if (destination != null) "WHERE toAirport = '$(destination)'"
 output application/json
 ---
 {
+	(destinationParam: vars.queryParam) if (!isEmpty(vars.queryParam)),
 	message: "Get American Flights: DB response",
 	fetchedRecords: sizeOf(payload)
 }]]></ee:set-variable>
