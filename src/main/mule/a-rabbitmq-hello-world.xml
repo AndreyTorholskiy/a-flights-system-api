@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="publishMessageToExchange" doc:id="d7f97406-2701-4691-8005-70450ca728db" >
+		<http:listener doc:name="POST:/publishHello" doc:id="1f9aed2e-963e-4ca4-a532-06405fdefdc2" config-ref="HTTP_Domain_Listener_config" path="/publishHello" allowedMethods="POST"/>
+		<amqp:publish doc:name="Publish" doc:id="cdedbc33-1ab2-449e-b7bd-a856898fc6ce" config-ref="AMQP_Config">
+			<amqp:routing-keys >
+				<amqp:routing-key value="hello" />
+			</amqp:routing-keys>
+		</amqp:publish>
+		<logger level="INFO" doc:name="Print Published Message" doc:id="3e794673-af22-4adb-ba76-c133e3300934" message="#[payload]"/>
+	</flow>
+	<flow name="getMessageFromQueue" doc:id="8ebdba48-1719-4f39-a84d-9b133c7d6674" >
+		<http:listener doc:name="GET:/consumeHello" doc:id="71768540-d75e-4a0d-898a-e988913700cc" config-ref="HTTP_Domain_Listener_config" allowedMethods="GET" path="/consumeHello"/>
+		<amqp:consume doc:name="Consume" doc:id="2b77b8c6-03af-4158-9298-c9aebb86275e" config-ref="AMQP_Config" queueName="hello"/>
+		<logger level="INFO" doc:name="Print Message from Queue" doc:id="6840333f-a731-41a8-96fb-fb70ebc1e1c7" message="#[payload]"/>
+	</flow>
+</mule>
