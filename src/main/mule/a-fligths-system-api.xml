@@ -10,9 +10,9 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <flow-ref doc:name="initialRequestLogging" doc:id="9aff0ce4-7eaa-4a69-a231-b589941987e4" name="initialRequestLogging"/>
-		<apikit:router config-ref="a-fligths-system-api-config" />
-		<flow-ref doc:name="finalLoggerMessage" doc:id="5c3c9825-44b1-427d-bb8a-e1edf89b363b" name="finalLoggerMessage"/>
+        <flow-ref doc:name="initialRequestLogging" doc:id="9aff0ce4-7eaa-4a69-a231-b589941987e4" name="initialRequestLogging" />
+        <apikit:router config-ref="a-fligths-system-api-config" />
+        <flow-ref doc:name="finalLoggerMessage" doc:id="5c3c9825-44b1-427d-bb8a-e1edf89b363b" name="finalLoggerMessage" />
     </flow>
     <flow name="a-fligths-system-api-console">
         <http:listener config-ref="HTTP_Domain_Listener_config" path="${http.listener.path}/console/*">
@@ -24,12 +24,18 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-		<apikit:console config-ref="a-fligths-system-api-config" />
+        <apikit:console config-ref="a-fligths-system-api-config" />
     </flow>
     <flow name="get:\flights:a-fligths-system-api-config">
-		<flow-ref doc:name="getFlights" doc:id="b8d70af6-3709-4f18-85d8-d3558197785d" name="getFlights" />
+        <flow-ref doc:name="getFlights" doc:id="b8d70af6-3709-4f18-85d8-d3558197785d" name="getFlights" />
     </flow>
     <flow name="get:\flights\(ID):a-fligths-system-api-config">
-		<flow-ref doc:name="getFlightsByID" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightByID" />
+        <flow-ref doc:name="getFlightsByID" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightByID" />
+    </flow>
+    <flow name="post:\publishHello:a-fligths-system-api-config">
+        <flow-ref doc:name="publishMessageToQueue" doc:id="dfa13594-fa0f-427b-b008-564548a89808" name="publishMessageToQueue" />
+    </flow>
+    <flow name="get:\consumeHello:a-fligths-system-api-config">
+		<flow-ref doc:name="getMessageFromQueue" doc:id="e81df297-d8b1-4ce5-aa20-0f6648c07d5a" name="getMessageFromQueue" />
     </flow>
 </mule>
