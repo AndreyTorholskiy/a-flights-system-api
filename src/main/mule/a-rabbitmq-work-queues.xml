@@ -6,6 +6,44 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<flow name="publishWorkerMessageToQueue" doc:id="6430b5bd-d471-4ac3-af9b-7659f424f033" >
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="8df4b8d4-29f6-4509-ae3e-25ac0abe52bb">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Publish message to the queue request"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="cfb7ded5-7915-4182-8885-b259ef4aaeef" name="auditLogging" />
+		<amqp:publish doc:name="Publish" doc:id="d5e02e1f-23d0-4839-a9ab-d072c78d4924" config-ref="Local_RabbitMQ_AMQP_Config" deliveryMode="PERSISTENT">
+			<amqp:routing-keys >
+				<amqp:routing-key value="work_queue" />
+			</amqp:routing-keys>
+		</amqp:publish>
+		<ee:transform doc:name="Logger Message: Publish MQ Response" doc:id="538c7bc8-1a3b-4952-8cc0-35bf913c354b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{	
+	status: "Message was successfully published",
+	(sentMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	(sentMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
 	<flow name="getWorkerMessageFromQueue" doc:id="e9d403d7-eb62-4f23-ae95-e4bf7ea1deb6" >
 		<amqp:listener doc:name="Listener" doc:id="4731fa7e-7e45-406f-b9df-4d96db83b5dd" config-ref="Local_RabbitMQ_AMQP_Config" ackMode="MANUAL" queueName="work_queue" numberOfConsumers="2">
 			<amqp:listener-quality-of-service-config prefetchCount="1" />
@@ -27,13 +65,14 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="auditLogging" doc:id="79531cb1-9aff-4fd6-bcb0-43525893fe30" name="auditLogging" />
-		<ee:transform doc:name="5 Seconds Worker" doc:id="1a95a732-1216-4e32-beb6-1fce646bd1f9" >
+		<ee:transform doc:name="Worker" doc:id="1a95a732-1216-4e32-beb6-1fce646bd1f9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 import * from dw::Runtime
+var sleepTime = sizeOf(payload find ".") * 1000
 ---
-wait(payload, 5000)]]></ee:set-payload>
+wait(payload, sleepTime)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<amqp:ack doc:name="Ack" doc:id="8db9b855-76a2-4061-966c-c38316b35f0f" ackId="#[attributes.ackId]" />

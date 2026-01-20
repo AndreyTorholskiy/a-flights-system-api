@@ -33,7 +33,7 @@
         <flow-ref doc:name="getFlightsByID" doc:id="d413eb73-c0fb-45cd-bf03-0eb86f1ed0a5" name="getFlightByID" />
     </flow>
     <flow name="post:\publishHello:a-fligths-system-api-config">
-        <flow-ref doc:name="publishMessageToQueue" doc:id="dfa13594-fa0f-427b-b008-564548a89808" name="publishMessageToQueue" />
+        <flow-ref doc:name="publishWorkerMessageToQueue" doc:id="dfa13594-fa0f-427b-b008-564548a89808" name="publishWorkerMessageToQueue" />
     </flow>
     <flow name="get:\consumeHello:a-fligths-system-api-config">
 		<flow-ref doc:name="getMessageFromQueue" doc:id="e81df297-d8b1-4ce5-aa20-0f6648c07d5a" name="getMessageFromQueue" />
