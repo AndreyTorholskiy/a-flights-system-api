@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
-	<!-- [STUDIO:"getMessageFromExchangeFirstConsumer"]<flow name="getMessageFromExchangeFirstConsumer" doc:id="b3e09424-b933-4a6c-ad83-9175eff99f6c" >
-		<amqp:listener doc:name="Listener" doc:id="3dc3c87c-6b12-4a55-9af9-a689dde06cd9" config-ref="Local_RabbitMQ_AMQP_Config">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getMessageFromExchangeA" doc:id="b3e09424-b933-4a6c-ad83-9175eff99f6c" >
+		<amqp:listener doc:name="Listener" doc:id="3dc3c87c-6b12-4a55-9af9-a689dde06cd9" config-ref="Local_RabbitMQ_AMQP_Config" queueName="consumerA" numberOfConsumers="1" ackMode="MANUAL">
+			<amqp:fallback-queue-definition removalStrategy="UNUSED" exchangeToBind="logs"/>
+			<amqp:listener-quality-of-service-config prefetchCount="1" />
 		</amqp:listener>
-	</flow> [STUDIO] -->
-	<!-- [STUDIO:"getMessageFromExchangeSecondConsumer"]<flow name="getMessageFromExchangeSecondConsumer" doc:id="4e981b0a-18bd-4460-99d4-5c6ed7931b33" >
-		<amqp:listener doc:name="Listener" doc:id="1f849224-c96e-40a0-b4c9-f41171f3c071" config-ref="Local_RabbitMQ_AMQP_Config" />
-	</flow> [STUDIO] -->
+		<flow-ref doc:name="initialRequestLogging" doc:id="f892aa56-cff8-475f-8a50-4ca644c523b8" name="initialRequestLogging" />
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="943ccbd3-33e5-43df-a0dc-cd38a1d0b2f9" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Consume message from the queue A request",
+	ackID: attributes.ackId,
+	deliveryTag: attributes.envelope.deliveryTag,
+	exchange: attributes.envelope.exchange,
+	(recvMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="3942641e-7722-4e0b-8bde-fb84ab719f09" name="auditLogging" />
+		<amqp:ack doc:name="Ack" doc:id="ba0ffe80-9a08-427b-8d90-a753adebb7b4" ackId="#[attributes.ackId]" />
+		<flow-ref doc:name="finalLoggerMessage" doc:id="9cddf5fb-8ab9-416a-8618-bf5da81dba53" name="finalLoggerMessage" />
+	</flow>
+	<flow name="getMessageFromExchangeB" doc:id="1e9f67e6-10f7-4271-9882-dd5efdd7593b">
+		<amqp:listener doc:name="Listener" doc:id="82fa59d0-40ee-4f06-9d98-c4bd380b15a2" config-ref="Local_RabbitMQ_AMQP_Config" queueName="consumerB" numberOfConsumers="1" ackMode="MANUAL">
+			<amqp:fallback-queue-definition removalStrategy="UNUSED" exchangeToBind="logs" />
+			<amqp:listener-quality-of-service-config prefetchCount="1" />
+		</amqp:listener>
+		<flow-ref doc:name="initialRequestLogging" doc:id="b36f9144-d799-4a63-ab4f-01023bf5527c" name="initialRequestLogging" />
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="8f806e78-8989-4ba5-9518-ac912b96d72b">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Consume message from the queue B request",
+	ackID: attributes.ackId,
+	deliveryTag: attributes.envelope.deliveryTag,
+	exchange: attributes.envelope.exchange,
+	(recvMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="892b6d24-4058-4f0c-9700-5e0ebde1e102" name="auditLogging" />
+		<amqp:ack doc:name="Ack" doc:id="aa718d5d-5213-4dad-8e16-2fec0f18ae36" ackId="#[attributes.ackId]" />
+		<flow-ref doc:name="finalLoggerMessage" doc:id="09babfda-267d-46d0-ac5d-acc01bbbbab9" name="finalLoggerMessage" />
+	</flow>
+	<flow name="publishMessageToExchange" doc:id="ce22aa43-b3f3-4cad-b644-4f9b041de6ec" >
+		<ee:transform doc:name="Logger Message: Flow Start" doc:id="adc9e169-7872-4ce8-89db-33c1146a41f8" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Publish message to the queue request"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="auditLogging" doc:id="c5058eb4-05df-4010-a9af-a12cefb8d31d" name="auditLogging" />
+		<amqp:publish doc:name="Publish" doc:id="1bfa2b14-92cf-468d-b5d9-62497db3f225" config-ref="Local_RabbitMQ_AMQP_Config" deliveryMode="PERSISTENT" exchangeName="logs" createFallbackExchange="true">
+			<amqp:fallback-exchange-definition />
+			<amqp:routing-keys >
+			</amqp:routing-keys>
+		</amqp:publish>
+		<ee:transform doc:name="Logger Message: Publish MQ Response" doc:id="89d7daf7-3614-4201-94b2-ffa17ca49194" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{	
+	status: "Message was successfully published",
+	(sentMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	(sentMessage: payload) if (!isEmpty(payload))
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
 </mule>
