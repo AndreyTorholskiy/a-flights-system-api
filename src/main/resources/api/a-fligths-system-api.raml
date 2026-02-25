@@ -1,12 +1,14 @@
 #%RAML 1.0
-title: a-fligths-system-api
+title: a-flights-system-api
+version: v1
+mediaType: application/json
 
 types:
   AmericanFlight: !include datatypes/AmericanFlightDataType.raml
+  Error: !include datatypes/Error.raml
   
-/flights:
-  get:
-    displayName: Get flights
+traits:
+  DestinationFilter:
     queryParameters:
       destination:
         required: false
@@ -14,24 +16,58 @@ types:
           - SFO
           - LAX
           - CLE
+  ErrorResponse:
+    responses:
+      400:
+        body:
+          type: Error
+          example: !include examples/errors/400.json
+      404:
+        body:
+          type: Error
+          example: !include examples/errors/404.json
+      405:
+        body:
+          type: Error
+          example: !include examples/errors/405.json
+      406:
+        body:
+          type: Error
+          example: !include examples/errors/406.json            
+      415:
+        body:
+          type: Error
+          example: !include examples/errors/415.json
+      500:
+        body:
+          type: Error
+          example: !include examples/errors/500.json
+      501:
+        body:
+          type: Error
+          example: !include examples/errors/501.json    
+  
+/flights:
+  get:
+    displayName: Get flights
+    description: Retrieve a list of all flights
+    is: [DestinationFilter, ErrorResponse]
     responses:
       200:
         body:
           application/json:
             type: AmericanFlight[]
             examples:
-              output: !include examples/AmericanFlightsExample.json
+              output: !include examples/american-flights-example.json
   /{ID}:
     get:
+      displayName: Get flight by ID
+      description: Retrieve a specific American Flight by its ID
+      is: [ErrorResponse]
       responses:
         200:
           body:
             application/json:
               type: AmericanFlight
               examples:
-                output: !include examples/AmericanFlightExample.json
-/publishHello:
-  post:
-  
-/consumeHello:
-  get:
+                output: !include examples/american-flight-example.json
