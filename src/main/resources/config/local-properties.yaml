@@ -3,7 +3,7 @@ api:
   
 http:
   listener:
-    path: "/a-flights-sa/api/${api.version}"
+    basePath: "/a-flights-sa/api/${api.version}"
      
 db:
   mysql:
