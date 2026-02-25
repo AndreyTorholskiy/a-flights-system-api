@@ -1,0 +1,23 @@
+#%RAML 1.0 DataType
+displayName: Standard Error Response
+description: Standard error mapping response payload
+
+type: object
+properties:
+  error:
+    description: Root error object
+    type: object
+    required: true
+    properties:
+      errorType:
+        description: Error namespace and identifier 
+        type: string
+        required: true
+      errorMessage:
+        description: Detailed error message
+        type: string
+        required: true
+      timestamp:
+        description: Timestamp when error occur
+        type: datetime
+        required: true
