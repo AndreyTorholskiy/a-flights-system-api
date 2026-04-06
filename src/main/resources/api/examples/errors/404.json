@@ -1,7 +1,7 @@
 {
-  "error": {
-    "errorType": "APIKIT:NOT_FOUND",
-    "errorMessage": "Resource not found. Please check the URL.",
-    "timestamp": "2026-01-30T10:30:00Z"
-  }
+	"errorInfo": {
+		"errorType": "APIKIT:NOT_FOUND",
+		"errorMessage": "Resource not found. Please check the URL.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
 }

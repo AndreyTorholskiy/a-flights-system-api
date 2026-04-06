@@ -1,7 +1,7 @@
 {
-  "error": {
-    "errorType": "APIKIT:UNSUPPORTED_MEDIA_TYPE",
-    "errorMessage": "Unsupported media type. Please check the Content-Type header.",
-    "timestamp": "2026-01-30T10:30:00Z"
-  }
+	"errorInfo": {
+		"errorType": "APIKIT:UNSUPPORTED_MEDIA_TYPE",
+		"errorMessage": "Unsupported media type. Please check the Content-Type header.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
 }

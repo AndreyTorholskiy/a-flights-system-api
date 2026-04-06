@@ -1,7 +1,7 @@
 {
-  "error": {
-    "errorType": "APIKIT:NOT_IMPLEMENTED",
-    "errorMessage": "The functionality is not yet implemented.",
-    "timestamp": "2026-01-30T10:30:00Z"
-  }
+	"errorInfo": {
+		"errorType": "APIKIT:NOT_IMPLEMENTED",
+		"errorMessage": "The functionality is not yet implemented.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
 }
