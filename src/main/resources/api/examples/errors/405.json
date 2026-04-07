@@ -1,0 +1,7 @@
+{
+	"errorInfo": {
+		"errorType": "APIKIT:METHOD_NOT_ALLOWED",
+		"errorMessage": "Method not allowed for this endpoint.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
+}

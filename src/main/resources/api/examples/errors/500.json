@@ -1,0 +1,7 @@
+{
+	"errorInfo": {
+		"errorType": "APIKIT:INTERNAL_SERVER_ERROR",
+		"errorMessage": "An unexpected error occurred on the server.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
+}

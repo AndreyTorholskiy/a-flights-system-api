@@ -1,0 +1,7 @@
+{
+	"errorInfo": {
+		"errorType": "APIKIT:NOT_ACCEPTABLE",
+		"errorMessage": "Not acceptable. The server cannot generate a response suitable for the accept headers.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
+}

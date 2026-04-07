@@ -1,0 +1,7 @@
+{
+	"errorInfo": {
+		"errorType": "APIKIT:BAD_REQUEST",
+		"errorMessage": "Bad request. The input payload or parameters are invalid.",
+		"timestamp": "2026-01-30T10:30:00Z"
+	}
+}
